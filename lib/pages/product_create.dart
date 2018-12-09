@@ -12,11 +12,25 @@ class ProductCreatePage extends StatefulWidget {
   }
 }
 
+
+
 class _ProductCreatePageState extends State<ProductCreatePage> {
   String titleValue = "";
   String description = "";
   double priceValue;
   bool acceptedTerms = false;
+
+
+  void _submitForm() {
+    final Map<String, dynamic> product = {
+      'title': titleValue,
+      'description': description,
+      'price': priceValue
+    };
+    widget.addProduct(product);
+    Navigator.pushReplacementNamed(context, '/products-list');
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -64,15 +78,8 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
               child: Text('Save'),
               color: Theme.of(context).accentColor,
               textColor: Colors.white,
-              onPressed: () {
-                final Map<String, dynamic> product = {
-                  'title': titleValue,
-                  'description': description,
-                  'price': priceValue
-                };
-                widget.addProduct(product);
-                Navigator.pushReplacementNamed(context, '/products-list');
-              }),
+              onPressed: _submitForm
+          ),
         ],
       ),
     );

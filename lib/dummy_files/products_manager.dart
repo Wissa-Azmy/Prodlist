@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import './products.dart';
+import '../products.dart';
 //import './product_btn.dart';
 
 class ProductsManager extends StatelessWidget {
