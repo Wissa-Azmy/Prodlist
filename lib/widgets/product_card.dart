@@ -18,7 +18,10 @@ class ProductCard extends StatefulWidget {
 class _ProductCard extends State<ProductCard> {
   Map product;
 
-  Widget favBtnIcon = Icon(Icons.favorite_border, size: 35.0,);
+  Widget favBtnIcon = Icon(
+    Icons.favorite_border,
+    size: 35.0,
+  );
   bool favBtnToggle = false;
 
   @override
@@ -28,13 +31,47 @@ class _ProductCard extends State<ProductCard> {
     super.initState();
   }
 
+  void _infoBtnTapped() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProductPage(product),
+      ),
+    ).then((value) {
+      if (value) {
+
+      }
+    });
+  }
+
+  void _favBtnTapped() {
+    setState(() {
+      if (favBtnToggle == false) {
+        favBtnToggle = true;
+        favBtnIcon = Icon(
+          Icons.favorite,
+          size: 35.0,
+        );
+      } else {
+        favBtnToggle = false;
+        favBtnIcon = Icon(
+          Icons.favorite_border,
+          size: 35.0,
+        );
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Card(
       child: Column(
         children: <Widget>[
-          Image.asset('assets/food.jpg'),
+          GestureDetector(
+            onTap: _infoBtnTapped,
+            child: Image.asset('assets/food.jpg'),
+          ),
           Container(
             padding: EdgeInsets.only(top: 10.0),
             child: Row(
@@ -70,34 +107,17 @@ class _ProductCard extends State<ProductCard> {
             children: <Widget>[
               IconButton(
                 color: Theme.of(context).accentColor,
-                icon: Icon(Icons.info, size: 35.0,),
+                icon: Icon(
+                  Icons.info,
+                  size: 35.0,
+                ),
 //                child: Text('Details'),
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ProductPage(product),
-                  ),
-                ).then((value) {
-                  if (value) {
-//                        removeProduct(index);
-                  }
-                }),
+                onPressed: _infoBtnTapped
               ),
               IconButton(
                 color: Colors.red,
                 icon: favBtnIcon,
-                onPressed: () {
-                  setState(() {
-                    if (favBtnToggle == false) {
-                      favBtnToggle = true;
-                      favBtnIcon = Icon(Icons.favorite, size: 35.0,);
-                    } else {
-                      favBtnToggle = false;
-                      favBtnIcon = Icon(Icons.favorite_border, size: 35.0,);
-                    }
-
-                  });
-                },
+                onPressed: _favBtnTapped,
 //                child: Text('Delete'),
               )
             ],

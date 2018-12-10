@@ -13,7 +13,6 @@ class ProductCreatePage extends StatefulWidget {
 }
 
 
-
 class _ProductCreatePageState extends State<ProductCreatePage> {
   String titleValue = "";
   String description = "";
@@ -34,10 +33,15 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
 
   @override
   Widget build(BuildContext context) {
+    final double deviceWidth = MediaQuery.of(context).size.width;
+    final double targetPadding = deviceWidth > 500 ? deviceWidth * 0.2 : deviceWidth * 0.05;
+
     // TODO: implement build
     return Container(
       margin: EdgeInsets.all(10.0),
+      // ListView always take all the available space width or height.
       child: ListView(
+        padding: EdgeInsets.symmetric(horizontal: targetPadding),
         children: <Widget>[
           TextField(
             decoration: InputDecoration(labelText: 'Title'),
