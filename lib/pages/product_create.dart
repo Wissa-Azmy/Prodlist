@@ -14,19 +14,22 @@ class ProductCreatePage extends StatefulWidget {
 
 
 class _ProductCreatePageState extends State<ProductCreatePage> {
-  String titleValue = "";
-  String description = "";
-  double priceValue;
+  final Map<String, dynamic> _formData = {
+    'title': null,
+    'description': null,
+    'price': null
+  };
   bool acceptedTerms = false;
+  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
 
   void _submitForm() {
-    final Map<String, dynamic> product = {
-      'title': titleValue,
-      'description': description,
-      'price': priceValue
-    };
-    widget.addProduct(product);
+    if (!_formkey.currentState.validate()) {
+      return;
+    }
+    _formkey.currentState.save();
+
+    widget.addProduct(_formData);
     Navigator.pushReplacementNamed(context, '/products-list');
   }
 
@@ -37,54 +40,77 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
     final double targetPadding = deviceWidth > 500 ? deviceWidth * 0.2 : deviceWidth * 0.05;
 
     // TODO: implement build
-    return Container(
-      margin: EdgeInsets.all(10.0),
-      // ListView always take all the available space width or height.
-      child: ListView(
-        padding: EdgeInsets.symmetric(horizontal: targetPadding),
-        children: <Widget>[
-          TextField(
-            decoration: InputDecoration(labelText: 'Title'),
-            onChanged: (String value) {
-              setState(() {
-                titleValue = value;
-              });
-            },
+    return GestureDetector(
+      onTap: (){
+        // This dismisses the keyboarding by focusing on an empty node.
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
+      child: Container(
+        margin: EdgeInsets.all(10.0),
+        // ListView always take all the available space width or height.
+        child: Form(
+          key: _formkey,
+          child: ListView(
+            padding: EdgeInsets.symmetric(horizontal: targetPadding),
+            children: <Widget>[
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Title'),
+                onSaved: (String value) {
+                    _formData['title'] = value;
+                },
+                validator: (value){
+                  if (value.isEmpty || value.length < 5) {
+                    return 'Title is required & 5+ characters';
+                  }
+                },
+              ),
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Description'),
+                maxLines: null,
+                onSaved: (value) {
+                  _formData['description'] = value;
+                },
+                validator: (value){
+                  if (value.isEmpty) {
+                    return 'Description is required';
+                  }
+                },
+              ),
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Price'),
+                keyboardType: TextInputType.numberWithOptions(),
+                onSaved: (value) {
+                  _formData['price'] = double.parse(value);
+                },
+                validator: (value) {
+                  if (value.isEmpty ||
+                      !RegExp(r'^(?:[1-9]\d*|0)?(?:\.\d+)?$').hasMatch(value)) {
+                    return 'Enter a valid number.';
+                  }
+                },
+              ),
+              SwitchListTile(
+                title: Text('Accept Terms'),
+                value: acceptedTerms,
+                onChanged: (bool value) {
+                  // to reassign the value back to the switch when changed
+                  setState(() {
+                    acceptedTerms = value;
+                  });
+                },
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
+              RaisedButton(
+                  child: Text('Save'),
+                  color: Theme.of(context).accentColor,
+                  textColor: Colors.white,
+                  onPressed: _submitForm
+              ),
+            ],
           ),
-          TextField(
-            decoration: InputDecoration(labelText: 'Description'),
-            maxLines: 4,
-            onChanged: (value) {
-              description = value;
-            },
-          ),
-          TextField(
-            decoration: InputDecoration(labelText: 'Price'),
-            keyboardType: TextInputType.numberWithOptions(),
-            onChanged: (value) {
-              priceValue = double.parse(value);
-            },
-          ),
-          SwitchListTile(
-            title: Text('Accept Terms'),
-            value: acceptedTerms,
-            onChanged: (bool value) {
-              // to reassign the value back to the switch when changed
-              setState(() {
-                acceptedTerms = value;
-              });
-            },
-          ),
-          SizedBox(
-            height: 10.0,
-          ),
-          RaisedButton(
-              child: Text('Save'),
-              color: Theme.of(context).accentColor,
-              textColor: Colors.white,
-              onPressed: _submitForm
-          ),
-        ],
+        ),
       ),
     );
     /* Modal
