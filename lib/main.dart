@@ -39,6 +39,12 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  void _updateProduct(int index, Map product)  {
+    setState(() {
+      _productsList[index] = product;
+    });
+  }
+
   // The build method is required by any Widget class that extends flutter State
   // BuildContext is the type of the context parameter
   @override  // Not required annotation - just for clarity and readability
@@ -55,7 +61,8 @@ class _MyAppState extends State<MyApp> {
       routes: {
         '/': (context) => AuthPage(),
         '/products-list': (context) => ProductsPage(_productsList),
-        '/admin': (context) => ProductsAdminPage(_addProduct, _removeProduct),
+        '/admin': (context) => ProductsAdminPage(_updateProduct, _addProduct, _removeProduct, _productsList),
+//        '/admin/products-list': (context) => ProductsListPage(_updateProduct, _productsList)
       },
       onUnknownRoute: (RouteSettings settings) {
         return MaterialPageRoute(
