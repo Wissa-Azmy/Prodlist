@@ -4,6 +4,7 @@ import 'Package:flutter/Material.Dart';
 import 'pages/auth.dart';
 import 'pages/products_admin.dart';
 import 'pages/products.dart';
+import 'models/product.dart';
 
 // Shorter function notation (only valid with functions containing 1 statement)
 void main() {
@@ -24,9 +25,9 @@ class MyApp extends StatefulWidget {
 // The _ before the class name indicates that it has filePrivate access
 // <MyApp> is used to link this state class to it's owner class
 class _MyAppState extends State<MyApp> {
-  List<Map<String, dynamic>> _productsList = [];
+  List<Product> _productsList = [];
 
-  void _addProduct(Map product) {
+  void _addProduct(Product product) {
     // setState is used to dispatch any updates to the UI
     setState(() {
       _productsList.add(product);
@@ -39,7 +40,7 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  void _updateProduct(int index, Map product)  {
+  void _updateProduct(int index, Product product)  {
     setState(() {
       _productsList[index] = product;
     });

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../products.dart';
-//import './product_btn.dart';
+import '../models/product.dart';
 
 class ProductsManager extends StatelessWidget {
 
-  final List<Map> productsList;
+  final List<Product> productsList;
 
   // This receives the startingProduct from the main.dart file
   // and then passed to the state class to start with

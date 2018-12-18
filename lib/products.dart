@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'widgets/product_card.dart';
+import 'models/product.dart';
 
 class Products extends StatefulWidget {
   // final means the productsList array will not be changed once initialized
-  final List<Map> productsList;
+  final List<Product> productsList;
 
   // This is the class constructor. it must has the same class name
   Products(this.productsList);

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'product_create.dart';
+import '../models/product.dart';
 
 class ProductsListPage extends StatelessWidget {
-  final List<Map> _productsList;
+  final List<Product> _productsList;
   final Function updateProduct;
   final Function deleteProduct;
 
@@ -43,8 +44,8 @@ class ProductsListPage extends StatelessWidget {
                 leading: CircleAvatar(
                   backgroundImage: AssetImage('assets/food.jpg'),
                 ),
-                title: Text(_productsList[index]['title']),
-                subtitle: Text('\$ ${_productsList[index]['price'].toString()}'),
+                title: Text(_productsList[index].title),
+                subtitle: Text('\$ ${_productsList[index].price.toString()}'),
                 trailing: IconButton(
                   icon: Icon(Icons.edit),
                   onPressed: () {

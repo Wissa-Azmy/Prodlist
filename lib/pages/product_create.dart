@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 
+import '../models/product.dart';
+
 class ProductCreatePage extends StatefulWidget {
   final Function addProduct;
   final Function updateProduct;
   final int index;
-  final Map product;
+  final Product product;
 
-  ProductCreatePage({this.index, this.addProduct, this.updateProduct, this.product});
+  ProductCreatePage(
+      {this.index, this.addProduct, this.updateProduct, this.product});
 
   @override
   State<StatefulWidget> createState() {
@@ -15,9 +18,7 @@ class ProductCreatePage extends StatefulWidget {
   }
 }
 
-
 class _ProductCreatePageState extends State<ProductCreatePage> {
-
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   final Map<String, dynamic> _formData = {
     'title': null,
@@ -26,33 +27,37 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
   };
   bool acceptedTerms = false;
 
-
-
   void _submitForm() {
     // Run validators in all Fields if not success return.
     if (!_formkey.currentState.validate()) {
       return;
     }
 
+    // Save form current state before using its data
+    _formkey.currentState.save();
+    final product = Product(
+        title: _formData['title'],
+        description: _formData['description'],
+        image: 'assets/food.jpg',
+        price: _formData['price']
+    );
+
     if (widget.product == null) {
-      _formkey.currentState.save();
-      widget.addProduct(_formData);
+      widget.addProduct(product);
       Navigator.pushReplacementNamed(context, '/products-list');
     } else {
-      _formkey.currentState.save();
-      widget.updateProduct(widget.index, _formData);
+      widget.updateProduct(widget.index, product);
       Navigator.pushReplacementNamed(context, '/products-list');
     }
-
   }
-
 
   @override
   Widget build(BuildContext context) {
     final double deviceWidth = MediaQuery.of(context).size.width;
-    final double targetPadding = deviceWidth > 500 ? deviceWidth * 0.2 : deviceWidth * 0.05;
+    final double targetPadding =
+        deviceWidth > 500 ? deviceWidth * 0.2 : deviceWidth * 0.05;
     final Widget pageContent = GestureDetector(
-      onTap: (){
+      onTap: () {
         // This dismisses the keyboarding by focusing on an empty node.
         FocusScope.of(context).requestFocus(FocusNode());
       },
@@ -66,11 +71,12 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
             children: <Widget>[
               TextFormField(
                 decoration: InputDecoration(labelText: 'Title'),
-                initialValue: widget.product == null ? '' : widget.product['title'],
+                initialValue:
+                    widget.product == null ? '' : widget.product.title,
                 onSaved: (String value) {
                   _formData['title'] = value;
                 },
-                validator: (value){
+                validator: (value) {
                   if (value.isEmpty || value.length < 5) {
                     return 'Title is required & 5+ characters';
                   }
@@ -78,12 +84,13 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
               ),
               TextFormField(
                 decoration: InputDecoration(labelText: 'Description'),
-                initialValue:  widget.product == null ? '' : widget.product['description'],
+                initialValue:
+                    widget.product == null ? '' : widget.product.description,
                 maxLines: null,
                 onSaved: (value) {
                   _formData['description'] = value;
                 },
-                validator: (value){
+                validator: (value) {
                   if (value.isEmpty) {
                     return 'Description is required';
                   }
@@ -91,7 +98,9 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
               ),
               TextFormField(
                 decoration: InputDecoration(labelText: 'Price'),
-                initialValue:  widget.product == null ? '' : widget.product['price'].toString(),
+                initialValue: widget.product == null
+                    ? ''
+                    : widget.product.price.toString(),
                 keyboardType: TextInputType.numberWithOptions(),
                 onSaved: (value) {
                   _formData['price'] = double.parse(value);
@@ -117,11 +126,10 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
                 height: 10.0,
               ),
               RaisedButton(
-                  child:  widget.product == null ? Text('Save') : Text('Update'),
+                  child: widget.product == null ? Text('Save') : Text('Update'),
                   color: Theme.of(context).accentColor,
                   textColor: Colors.white,
-                  onPressed: _submitForm
-              ),
+                  onPressed: _submitForm),
             ],
           ),
         ),
@@ -129,10 +137,14 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
     );
 
     // TODO: implement build
-    return widget.product == null ? pageContent : Scaffold(
-      appBar: AppBar(title: Text('Edit Product'),),
-      body: pageContent,
-    );
+    return widget.product == null
+        ? pageContent
+        : Scaffold(
+            appBar: AppBar(
+              title: Text('Edit Product'),
+            ),
+            body: pageContent,
+          );
     /* Modal
     return Center (
       child: RaisedButton(child: Text('Save') ,onPressed: () {

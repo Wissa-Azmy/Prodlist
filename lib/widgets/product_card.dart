@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../pages/product_page.dart';
 import './price_tag.dart';
+import '../models/product.dart';
 
 class ProductCard extends StatefulWidget {
-  final Map product;
+  final Product product;
 
   ProductCard(this.product);
 
@@ -16,7 +17,7 @@ class ProductCard extends StatefulWidget {
 }
 
 class _ProductCard extends State<ProductCard> {
-  Map product;
+  Product product;
 
   Widget favBtnIcon = Icon(
     Icons.favorite_border,
@@ -78,7 +79,7 @@ class _ProductCard extends State<ProductCard> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  product['title'],
+                  product.title,
                   style: TextStyle(
                       fontFamily: 'Oswald',
                       fontSize: 26.0,
@@ -87,7 +88,7 @@ class _ProductCard extends State<ProductCard> {
                 SizedBox(
                   width: 10.0,
                 ),
-                PriceTag(product['price'].toString()),
+                PriceTag(product.price.toString()),
               ],
             ),
           ),

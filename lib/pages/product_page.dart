@@ -1,8 +1,10 @@
 import 'Package:flutter/material.dart';
 import 'dart:async';
 
+import '../models/product.dart';
+
 class ProductPage extends StatelessWidget {
-  final Map product;
+  final Product product;
 
   ProductPage(this.product);
 
@@ -39,7 +41,7 @@ class ProductPage extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text(product['title']),
+          title: Text(product.title),
         ),
         body: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -47,7 +49,7 @@ class ProductPage extends StatelessWidget {
         Image.asset('assets/food.jpg'),
         Container(
           padding: EdgeInsets.all(10.0),
-          child: Text(product['description']),
+          child: Text(product.description),
         ),
         Container(
             padding: EdgeInsets.all(1.0),
