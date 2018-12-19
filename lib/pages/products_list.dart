@@ -1,67 +1,75 @@
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 import 'product_create.dart';
 import '../models/product.dart';
+import '../scoped_models/products.dart';
 
 class ProductsListPage extends StatelessWidget {
-  final List<Product> _productsList;
-  final Function updateProduct;
-  final Function deleteProduct;
 
-  ProductsListPage(this.deleteProduct, this.updateProduct, this._productsList);
-
-  void _navigateToUpdateForm(BuildContext context, int index) {
+  void _navigateToUpdateForm(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {
-          return ProductCreatePage(
-              updateProduct: updateProduct,
-              index: index,
-              product: _productsList[index]
-          );
+          return ProductCreatePage();
         },
       ),
+    );
+  }
+
+  Widget _buildUpdateBtn(context) {
+    return IconButton(
+      icon: Icon(Icons.edit),
+      onPressed: () {
+        _navigateToUpdateForm(context);
+      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return ListView.builder(
-      itemBuilder: (context, index) {
-        return Dismissible(
-          key: Key(index.toString()),
-          background: Container(color: Colors.red,),
-          onDismissed: (DismissDirection direction){
-            if (direction == DismissDirection.endToStart){
-              print('swiped end to start');
-              deleteProduct(index);
-            }
-          },
-          child: Column( // To use a divider with the listTitle
-            children: <Widget>[
-              ListTile(
-                leading: CircleAvatar(
-                  backgroundImage: AssetImage('assets/food.jpg'),
-                ),
-                title: Text(_productsList[index].title),
-                subtitle: Text('\$ ${_productsList[index].price.toString()}'),
-                trailing: IconButton(
-                  icon: Icon(Icons.edit),
-                  onPressed: () {
-                    _navigateToUpdateForm(context, index);
-                  },
-                ),
-                onTap: (){
-                  _navigateToUpdateForm(context, index);
-                },
+    return ScopedModelDescendant<ProductsModel>(
+      builder: (context, widget, model) {
+        List<Product> products = model.products;
+        return ListView.builder(
+          itemBuilder: (context, index) {
+            return Dismissible(
+              key: Key(index.toString()),
+              background: Container(
+                color: Colors.red,
               ),
-              Divider()
-            ],
-          ),
+              onDismissed: (DismissDirection direction) {
+                if (direction == DismissDirection.endToStart) {
+                  print('swiped end to start');
+                  model.setSelectedProductIndex(index);
+                  model.removeProduct();
+                }
+              },
+              child: Column(
+                // To use a divider with the listTitle
+                children: <Widget>[
+                  ListTile(
+                    leading: CircleAvatar(
+                      backgroundImage: AssetImage('assets/food.jpg'),
+                    ),
+                    title: Text(products[index].title),
+                    subtitle: Text('\$ ${products[index].price.toString()}'),
+                    trailing: _buildUpdateBtn(context),
+                    onTap: () {
+                      model.setSelectedProductIndex(index);
+                      _navigateToUpdateForm(context);
+                    },
+                  ),
+                  Divider()
+                ],
+              ),
+            );
+          },
+          itemCount: products.length,
         );
-      },
-      itemCount: _productsList.length,
+      }
     );
+
   }
 }

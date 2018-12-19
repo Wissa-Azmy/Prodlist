@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 import '../models/product.dart';
+import '../scoped_models/products.dart';
 
 class ProductCreatePage extends StatefulWidget {
-  final Function addProduct;
-  final Function updateProduct;
-  final int index;
-  final Product product;
-
-  ProductCreatePage(
-      {this.index, this.addProduct, this.updateProduct, this.product});
+  bool acceptedTerms = false;
 
   @override
   State<StatefulWidget> createState() {
@@ -25,9 +21,9 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
     'description': null,
     'price': null
   };
-  bool acceptedTerms = false;
 
-  void _submitForm() {
+
+  void _submitForm(Function addProduct, Function updateProduct, int index) {
     // Run validators in all Fields if not success return.
     if (!_formkey.currentState.validate()) {
       return;
@@ -39,26 +35,40 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
         title: _formData['title'],
         description: _formData['description'],
         image: 'assets/food.jpg',
-        price: _formData['price']
-    );
+        price: _formData['price']);
 
-    if (widget.product == null) {
-      widget.addProduct(product);
+    if (index == null) {
+      addProduct(product);
       Navigator.pushReplacementNamed(context, '/products-list');
     } else {
-      widget.updateProduct(widget.index, product);
+      updateProduct(product);
       Navigator.pushReplacementNamed(context, '/products-list');
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final double deviceWidth = MediaQuery.of(context).size.width;
-    final double targetPadding =
-        deviceWidth > 500 ? deviceWidth * 0.2 : deviceWidth * 0.05;
-    final Widget pageContent = GestureDetector(
+  Widget _buildSubmitBtn() {
+    return ScopedModelDescendant<ProductsModel>(
+      builder: (context, widget, model) {
+        return RaisedButton(
+            child: model.selectedIndex == null ? Text('Save') : Text('Update'),
+            color: Theme.of(context).accentColor,
+            textColor: Colors.white,
+            onPressed: () => _submitForm(
+                model.addProduct,
+                model.updateProduct,
+                model.selectedIndex
+            )
+        );
+      },
+    );
+  }
+
+  Widget _buildPageContent(BuildContext context, Product product){
+    double deviceWidth = MediaQuery.of(context).size.width;
+    double padding = deviceWidth > 500 ? deviceWidth * 0.2 : deviceWidth * 0.05;
+    return GestureDetector(
       onTap: () {
-        // This dismisses the keyboarding by focusing on an empty node.
+        // This dismisses the keyboard by focusing on an empty node.
         FocusScope.of(context).requestFocus(FocusNode());
       },
       child: Container(
@@ -67,12 +77,12 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
         child: Form(
           key: _formkey,
           child: ListView(
-            padding: EdgeInsets.symmetric(horizontal: targetPadding),
+            padding: EdgeInsets.symmetric(horizontal: padding),
             children: <Widget>[
               TextFormField(
                 decoration: InputDecoration(labelText: 'Title'),
                 initialValue:
-                    widget.product == null ? '' : widget.product.title,
+                product == null ? '' : product.title,
                 onSaved: (String value) {
                   _formData['title'] = value;
                 },
@@ -85,7 +95,7 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
               TextFormField(
                 decoration: InputDecoration(labelText: 'Description'),
                 initialValue:
-                    widget.product == null ? '' : widget.product.description,
+                product == null ? '' : product.description,
                 maxLines: null,
                 onSaved: (value) {
                   _formData['description'] = value;
@@ -98,9 +108,9 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
               ),
               TextFormField(
                 decoration: InputDecoration(labelText: 'Price'),
-                initialValue: widget.product == null
+                initialValue: product == null
                     ? ''
-                    : widget.product.price.toString(),
+                    : product.price.toString(),
                 keyboardType: TextInputType.numberWithOptions(),
                 onSaved: (value) {
                   _formData['price'] = double.parse(value);
@@ -114,37 +124,53 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
               ),
               SwitchListTile(
                 title: Text('Accept Terms'),
-                value: acceptedTerms,
+                value: widget.acceptedTerms,
                 onChanged: (bool value) {
                   // to reassign the value back to the switch when changed
                   setState(() {
-                    acceptedTerms = value;
+                    widget.acceptedTerms = value;
                   });
                 },
               ),
               SizedBox(
                 height: 10.0,
               ),
-              RaisedButton(
-                  child: widget.product == null ? Text('Save') : Text('Update'),
-                  color: Theme.of(context).accentColor,
-                  textColor: Colors.white,
-                  onPressed: _submitForm),
+              _buildSubmitBtn()
             ],
           ),
         ),
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
 
     // TODO: implement build
-    return widget.product == null
-        ? pageContent
-        : Scaffold(
-            appBar: AppBar(
-              title: Text('Edit Product'),
+    return ScopedModelDescendant<ProductsModel>(
+        builder: (context, widget, model) {
+          Product product = model.getSelectedProduct();
+          final Widget pageContent = _buildPageContent(context, product);
+          return WillPopScope(
+            onWillPop: () {
+              model.unsetSelectedIndex();
+              // Popping Manually
+              Navigator.pop(context, false);
+              // Turning off the automatic Navigation popping
+              return Future.value(false);
+            },
+            child: model.selectedIndex == null
+                ? pageContent
+                : Scaffold(
+              appBar: AppBar(
+                title: Text('Edit Product'),
+              ),
+              body: pageContent,
             ),
-            body: pageContent,
           );
+        }
+    );
+
     /* Modal
     return Center (
       child: RaisedButton(child: Text('Save') ,onPressed: () {

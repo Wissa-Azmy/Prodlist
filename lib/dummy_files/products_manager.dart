@@ -43,7 +43,7 @@ class ProductsManager extends StatelessWidget {
 //        ),
         // Expanded takes all the available space in the screen
         // We could've used Container but must've provided height attribute
-        Expanded(child: Products(productsList))
+        Expanded(child: Products())
       ],
     );
   }

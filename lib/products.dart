@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 import 'widgets/product_card.dart';
 import 'models/product.dart';
+import 'scoped_models/products.dart';
 
 class Products extends StatefulWidget {
   // final means the productsList array will not be changed once initialized
-  final List<Product> productsList;
+//  final List<Product> productsList;
 
   // This is the class constructor. it must has the same class name
-  Products(this.productsList);
+//  Products(this.productsList);
   // The above code translates to:
   /*
     Products(productsList) {
@@ -25,16 +27,17 @@ class Products extends StatefulWidget {
 
 class _ProductsState extends State<Products> {
 
-  Widget _buildProductsList() {
+  Widget _buildProductsList(List<Product> productsList) {
     Widget productsCards =
         Center(child: Text('No products found, please add some'));
 
-    if (widget.productsList.length > 0) {
+    if (productsList.length > 0) {
       // ListView: for static lists (renders all items and load them in memory)
       // ListView.builder: for dynamic lists
       productsCards = ListView.builder(
-        itemBuilder: (context, int index) => ProductCard(widget.productsList[index]),
-        itemCount: widget.productsList.length,
+        itemBuilder: (context, int index) =>
+            ProductCard(productsList[index]),
+        itemCount: productsList.length,
       );
     }
 
@@ -51,6 +54,10 @@ class _ProductsState extends State<Products> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return _buildProductsList();
+    return ScopedModelDescendant<ProductsModel>(
+      builder: (context, widget, model) {
+        return _buildProductsList(model.products);
+      },
+    );
   }
 }
