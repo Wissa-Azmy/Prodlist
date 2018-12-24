@@ -41,9 +41,9 @@ class _AuthPageState extends State<AuthPage> {
                 children: <Widget>[
                   TextField(
                     decoration: InputDecoration(
-                        labelText: 'User Name',
-                        filled: true,
-                        fillColor: Colors.white),
+                      labelText: 'User Name',
+                      filled: true,
+                      fillColor: Colors.white),
                   ),
                   SizedBox(
                     height: 10.0,

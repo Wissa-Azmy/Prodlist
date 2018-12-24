@@ -5,11 +5,13 @@ class Product {
   final String description;
   final String image;
   final double price;
+  bool isFavorite;
 
   Product({
     @required this.title,
     @required this.description,
     @required this.image,
-    @required this.price
+    @required this.price,
+    this.isFavorite = false
   });
 }

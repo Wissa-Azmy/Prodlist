@@ -36,7 +36,7 @@ class _ProductsState extends State<Products> {
       // ListView.builder: for dynamic lists
       productsCards = ListView.builder(
         itemBuilder: (context, int index) =>
-            ProductCard(productsList[index]),
+            ProductCard(productsList[index], index),
         itemCount: productsList.length,
       );
     }

@@ -8,6 +8,7 @@ class ProductsModel extends Model {
   int _selectedProductIndex;
 
   List<Product> get products {
+    // returning a new List to avoid returning the reference of the original list
     return List.from(_productsList);
   }
 
@@ -44,6 +45,17 @@ class ProductsModel extends Model {
 
   void setSelectedProductIndex(int index){
     _selectedProductIndex = index;
+  }
+
+//  void toggleProductFavorite() {
+//    final bool isFavorite = _productsList[_selectedProductIndex].isFavorite;
+//    if (isFavorite) {
+//
+//    }
+//  }
+
+  void setProductFavStatus(int index, bool status) {
+    _productsList[index].isFavorite = status;
   }
 
 }
