@@ -56,7 +56,7 @@ class _ProductsState extends State<Products> {
     // TODO: implement build
     return ScopedModelDescendant<ProductsModel>(
       builder: (context, widget, model) {
-        return _buildProductsList(model.products);
+        return _buildProductsList(model.displayedProducts);
       },
     );
   }

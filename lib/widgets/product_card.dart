@@ -30,20 +30,7 @@ class _ProductCard extends State<ProductCard> {
     // TODO: implement initState
     product = widget.product;
     favBtnToggle = widget.product.isFavorite;
-    setFavBtn();
     super.initState();
-  }
-
-
-  void setFavBtn() {
-    favBtnIcon = favBtnToggle ?
-    Icon(
-      Icons.favorite_border,
-      size: 35.0,
-    ) : Icon(
-      Icons.favorite,
-      size: 35.0,
-    );
   }
 
 
@@ -69,7 +56,6 @@ class _ProductCard extends State<ProductCard> {
         favBtnToggle = false;
       }
 
-      setFavBtn();
       setFavStatus(widget.index, favBtnToggle);
     });
   }
@@ -80,6 +66,7 @@ class _ProductCard extends State<ProductCard> {
     // TODO: implement build
     return ScopedModelDescendant<ProductsModel>(builder: (context, widget, model) {
       return Card(
+        key: Key(product.title),
         child: Column(
           children: <Widget>[
             GestureDetector(
@@ -130,7 +117,9 @@ class _ProductCard extends State<ProductCard> {
                 ),
                 IconButton(
                   color: Colors.red,
-                  icon: favBtnIcon,
+                  icon: product.isFavorite
+                      ? Icon(Icons.favorite, size: 35.0,)
+                      : Icon(Icons.favorite_border, size: 35.0,),
                   onPressed: () => _favBtnTapped(model.setProductFavStatus),
 //                child: Text('Delete'),
                 )

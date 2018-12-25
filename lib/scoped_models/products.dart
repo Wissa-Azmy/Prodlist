@@ -6,6 +6,7 @@ class ProductsModel extends Model {
 
   List<Product> _productsList = [];
   int _selectedProductIndex;
+  bool showFavorites = false;
 
   List<Product> get products {
     // returning a new List to avoid returning the reference of the original list
@@ -41,21 +42,33 @@ class ProductsModel extends Model {
 
   void unsetSelectedIndex() {
     _selectedProductIndex = null;
+    notifyListeners();
   }
 
   void setSelectedProductIndex(int index){
     _selectedProductIndex = index;
+    // This notifier rebuilds the ScopedModelDependents
+    notifyListeners();
   }
 
-//  void toggleProductFavorite() {
-//    final bool isFavorite = _productsList[_selectedProductIndex].isFavorite;
-//    if (isFavorite) {
-//
-//    }
-//  }
 
   void setProductFavStatus(int index, bool status) {
     _productsList[index].isFavorite = status;
+    notifyListeners();
+  }
+
+  void toggleDisplayMode() {
+    showFavorites = !showFavorites;
+    notifyListeners();
+  }
+
+  List<Product> get displayedProducts {
+    if (showFavorites) {
+      return List.from(
+        _productsList.where((product) => product.isFavorite).toList()
+      );
+    }
+    return List.from(_productsList);
   }
 
 }
