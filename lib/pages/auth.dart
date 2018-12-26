@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
 
+import '../scoped_models/main.dart';
 //import 'products.dart';
 
 class AuthPage extends StatefulWidget {
@@ -15,17 +17,18 @@ class AuthPage extends StatefulWidget {
 class _AuthPageState extends State<AuthPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final Map<String, dynamic> _formData = {
-    'userName': null,
+    'email': null,
     'password': null,
     'acceptTerms': null
   };
 
-  void _submitForm() {
+  void _submitForm(Function login) {
     if (!_formKey.currentState.validate() || !_formData['acceptTerms']) {
       return ;
     }
 
     _formKey.currentState.save();
+    login(_formData['email'], _formData['password']);
     Navigator.pushReplacementNamed(context, '/products-list');
   }
 
@@ -63,16 +66,16 @@ class _AuthPageState extends State<AuthPage> {
                     children: <Widget>[
                       TextFormField(
                         decoration: InputDecoration(
-                          labelText: 'User Name',
+                          labelText: 'Email',
                           filled: true,
                           fillColor: Colors.white
                         ),
                         onSaved: (value) {
-                          _formData['userName'] = value;
+                          _formData['email'] = value;
                         },
                         validator: (value) {
                           if (value.isEmpty) {
-                            return 'Username is required';
+                            return 'Email is required';
                           }
                         },
                       ),
@@ -104,11 +107,14 @@ class _AuthPageState extends State<AuthPage> {
                           });
                         },
                       ),
-                      RaisedButton(
-                        color: Theme.of(context).primaryColor,
-                        onPressed: _submitForm,
-                        child: Text('Login'),
-                      ),
+                      ScopedModelDescendant<MainModel>(
+                        builder: (context, widget, model) {
+                        return RaisedButton(
+                          color: Theme.of(context).primaryColor,
+                          onPressed: () => _submitForm(model.login),
+                          child: Text('Login'),
+                        );
+                      },)
                     ],
                   ),
                 ),
