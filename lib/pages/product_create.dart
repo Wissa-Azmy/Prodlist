@@ -23,7 +23,7 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
   };
 
 
-  void _submitForm(Function addProduct, Function updateProduct, int index) {
+  void _submitForm(Function addProduct, Function updateProduct, Function unsetSelectedIndex, int index) {
     // Run validators in all Fields if not success return.
     if (!_formkey.currentState.validate()) {
       return;
@@ -42,7 +42,10 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
       Navigator.pushReplacementNamed(context, '/products-list');
     } else {
       updateProduct(product);
-      Navigator.pushReplacementNamed(context, '/products-list');
+      // The promise .then is used to unsetSelectedIndex after Navigation
+      Navigator.pushReplacementNamed(context, '/products-list').then((_) {
+        unsetSelectedIndex();
+      });
     }
   }
 
@@ -56,6 +59,7 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
             onPressed: () => _submitForm(
                 model.addProduct,
                 model.updateProduct,
+                model.unsetSelectedIndex,
                 model.selectedIndex
             )
         );
@@ -152,12 +156,13 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
           final Widget pageContent = _buildPageContent(context, product);
           return WillPopScope(
             onWillPop: () {
-              model.unsetSelectedIndex();
               // Popping Manually
               Navigator.pop(context, false);
+              model.unsetSelectedIndex();
               // Turning off the automatic Navigation popping
               return Future.value(false);
             },
+
             child: model.selectedIndex == null
                 ? pageContent
                 : Scaffold(
