@@ -4,7 +4,7 @@ import 'package:scoped_model/scoped_model.dart';
 import '../pages/product_page.dart';
 import './price_tag.dart';
 import '../models/product.dart';
-import '../scoped_models/products.dart';
+import '../scoped_models/main.dart';
 
 class ProductCard extends StatefulWidget {
   final Product product;
@@ -22,8 +22,7 @@ class ProductCard extends StatefulWidget {
 
 class _ProductCard extends State<ProductCard> {
   Product product;
-  bool favBtnToggle = false;
-  Widget favBtnIcon;
+  bool favBtnToggle;
 
   @override
   void initState() {
@@ -50,12 +49,7 @@ class _ProductCard extends State<ProductCard> {
 
   void _favBtnTapped(Function setFavStatus) {
     setState(() {
-      if (favBtnToggle == false) {
-        favBtnToggle = true;
-      } else {
-        favBtnToggle = false;
-      }
-
+      favBtnToggle = !favBtnToggle;
       setFavStatus(widget.index, favBtnToggle);
     });
   }
@@ -64,7 +58,7 @@ class _ProductCard extends State<ProductCard> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return ScopedModelDescendant<ProductsModel>(builder: (context, widget, model) {
+    return ScopedModelDescendant<MainModel>(builder: (context, widget, model) {
       return Card(
         key: Key(product.title),
         child: Column(

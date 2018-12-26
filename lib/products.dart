@@ -3,7 +3,7 @@ import 'package:scoped_model/scoped_model.dart';
 
 import 'widgets/product_card.dart';
 import 'models/product.dart';
-import 'scoped_models/products.dart';
+import 'scoped_models/main.dart';
 
 class Products extends StatefulWidget {
   // final means the productsList array will not be changed once initialized
@@ -28,8 +28,14 @@ class Products extends StatefulWidget {
 class _ProductsState extends State<Products> {
 
   Widget _buildProductsList(List<Product> productsList) {
-    Widget productsCards =
-        Center(child: Text('No products found, please add some'));
+
+    for (Product product in productsList) {
+      print("${product.title}: ${product.isFavorite}");
+    }
+
+    Widget productsCards = Center(
+        child: Text('No products found, please add some')
+    );
 
     if (productsList.length > 0) {
       // ListView: for static lists (renders all items and load them in memory)
@@ -54,7 +60,7 @@ class _ProductsState extends State<Products> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return ScopedModelDescendant<ProductsModel>(
+    return ScopedModelDescendant<MainModel>(
       builder: (context, widget, model) {
         return _buildProductsList(model.displayedProducts);
       },

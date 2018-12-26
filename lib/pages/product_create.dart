@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import '../models/product.dart';
-import '../scoped_models/products.dart';
+import '../scoped_models/main.dart';
 
 class ProductCreatePage extends StatefulWidget {
   bool acceptedTerms = false;
@@ -47,7 +47,7 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
   }
 
   Widget _buildSubmitBtn() {
-    return ScopedModelDescendant<ProductsModel>(
+    return ScopedModelDescendant<MainModel>(
       builder: (context, widget, model) {
         return RaisedButton(
             child: model.selectedIndex == null ? Text('Save') : Text('Update'),
@@ -81,8 +81,7 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
             children: <Widget>[
               TextFormField(
                 decoration: InputDecoration(labelText: 'Title'),
-                initialValue:
-                product == null ? '' : product.title,
+                initialValue: product == null ? '' : product.title,
                 onSaved: (String value) {
                   _formData['title'] = value;
                 },
@@ -147,7 +146,7 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
   Widget build(BuildContext context) {
 
     // TODO: implement build
-    return ScopedModelDescendant<ProductsModel>(
+    return ScopedModelDescendant<MainModel>(
         builder: (context, widget, model) {
           Product product = model.getSelectedProduct();
           final Widget pageContent = _buildPageContent(context, product);
@@ -162,11 +161,11 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
             child: model.selectedIndex == null
                 ? pageContent
                 : Scaffold(
-              appBar: AppBar(
-                title: Text('Edit Product'),
-              ),
-              body: pageContent,
-            ),
+                  appBar: AppBar(
+                    title: Text('Edit Product'),
+                  ),
+                  body: pageContent,
+                ),
           );
         }
     );

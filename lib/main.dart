@@ -5,7 +5,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'pages/auth.dart';
 import 'pages/products_admin.dart';
 import 'pages/products.dart';
-import 'scoped_models/products.dart';
+import 'scoped_models/main.dart';
 
 // Shorter function notation (only valid with functions containing 1 statement)
 void main() {
@@ -31,9 +31,9 @@ class _MyAppState extends State<MyApp> {
   // BuildContext is the type of the context parameter
   @override  // Not required annotation - just for clarity and readability
   Widget build(BuildContext context) {
-    return ScopedModel<ProductsModel>(
+    return ScopedModel<MainModel>(
       // this model will be passed down to all child widgets
-      model: ProductsModel(),
+      model: MainModel(),
       child: MaterialApp(
         theme: ThemeData(
             brightness: Brightness.light,
