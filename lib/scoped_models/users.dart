@@ -1,12 +1,11 @@
-import 'package:scoped_model/scoped_model.dart';
 import '../models/user.dart';
+import 'shared_data.dart';
 
-class UsersModel extends Model {
-  User _authenticatedUser;
+class UsersModel extends SharedDataModel {
 
 
   void login(String email, String password) {
-    _authenticatedUser = User(id: '23234', email: email, password: password);
+    authenticatedUser = User(id: '23234', email: email, password: password);
   }
 
 }

@@ -79,10 +79,9 @@ class _ProductCard extends State<ProductCard> {
                         fontSize: 26.0,
                         fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(
-                    width: 10.0,
-                  ),
+                  SizedBox(width: 10.0),
                   PriceTag(product.price.toString()),
+                  Text(product.userEmail),
                 ],
               ),
             ),
@@ -102,10 +101,7 @@ class _ProductCard extends State<ProductCard> {
               children: <Widget>[
                 IconButton(
                     color: Theme.of(context).accentColor,
-                    icon: Icon(
-                      Icons.info,
-                      size: 35.0,
-                    ),
+                    icon: Icon(Icons.info, size: 35.0,),
 //                child: Text('Details'),
                     onPressed: _infoBtnTapped
                 ),
